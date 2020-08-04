@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring web socket tutorial</title>
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/ws');
+
+        <!-- Add an event listener for when a connection is open -->
+        socket.onopen = function () {
+            console.log('WebSocket connection opened. Ready to send messages.');
+        };
+
+        <!-- Add an event listener for when a message is received from the server -->
+        socket.onmessage = function (message) {
+            // console.log('Message received from server: ');
+            // console.log(message);
+
+            var arr = message.data.split("},{");
+            document.getElementById("positions").innerText = "\n" + arr[0] + "}\n\n";
+            for (i = 1; i < arr.length - 1; i++) {
+                document.getElementById("positions").innerText += "{" + arr[i] + "}\n\n";
+            }
+            document.getElementById("positions").innerText += "{" + arr[arr.length - 1] + "\n\n";
+
+            // document.getElementById("positions").innerText += "\n" + message.data + "\n";
+        };
+    </script>
+</head>
+<body>
+<h1>Current Aircraft Positions</h1>
+<div style="border-style: solid; border-width: 2px; margin-top: 15px; margin-bottom: 15px; margin-left: 15px; margin-right: 15px;">
+    <label id="positions"></label>
+</div>
+</body>
+</html>
