@@ -26,6 +26,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @NonNull
     private final AircraftRepository repository;
 
+    public List<WebSocketSession> getSessionList() {
+        return sessionList;
+    }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessionList.add(session);
@@ -48,20 +52,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    @Scheduled(fixedRate = 1_000)
-    public void sendPositions() {
-        ObjectMapper om = new ObjectMapper();
-
-        if (repository.count() > 0) {
-            for (WebSocketSession sessionInList : sessionList) {
-                try {
-                    sessionInList.sendMessage(new TextMessage(om.writeValueAsString(repository.findAll())));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//    @Scheduled(fixedRate = 1_000)
+//    public void sendPositions() {
+//        ObjectMapper om = new ObjectMapper();
+//
+//        if (repository.count() > 0) {
+//            for (WebSocketSession sessionInList : sessionList) {
+//                try {
+//                    sessionInList.sendMessage(new TextMessage(om.writeValueAsString(repository.findAll())));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {

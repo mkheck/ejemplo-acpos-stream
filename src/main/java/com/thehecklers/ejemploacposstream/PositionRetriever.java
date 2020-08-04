@@ -1,25 +1,44 @@
 package com.thehecklers.ejemploacposstream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
 @AllArgsConstructor
 @Configuration
 public class PositionRetriever {
-    private final AircraftRepository repo;
+    private final AircraftRepository repository;
+    private final WebSocketHandler handler;
     
     @Bean
     Consumer<List<Aircraft>> retrieveAircraftPositions() {
         return acList -> {
-            repo.deleteAll();
+            repository.deleteAll();
             
-            repo.saveAll(acList);
+            repository.saveAll(acList);
 
-            //repo.findAll().forEach(System.out::println);
+            sendPositions();
         };
+    }
+
+    private void sendPositions() {
+        ObjectMapper om = new ObjectMapper();
+
+        if (repository.count() > 0) {
+            for (WebSocketSession sessionInList : handler.getSessionList()) {
+                try {
+                    sessionInList.sendMessage(new TextMessage(om.writeValueAsString(repository.findAll())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

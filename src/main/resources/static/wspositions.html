@@ -16,14 +16,21 @@
             // console.log('Message received from server: ');
             // console.log(message);
 
+            var text = "";
+            var lastPosText = "";
             var arr = message.data.split("},{");
-            document.getElementById("positions").innerText = "\n" + arr[0] + "}\n\n";
-            for (i = 1; i < arr.length - 1; i++) {
-                document.getElementById("positions").innerText += "{" + arr[i] + "}\n\n";
+            if (arr.length > 1) {
+                text = "\n" + arr[0] + "}\n\n";
+                lastPosText = "{" + arr[arr.length - 1] + "\n\n";
+            } else {
+                text = "\n" + arr[0] + "\n\n";
             }
-            document.getElementById("positions").innerText += "{" + arr[arr.length - 1] + "\n\n";
+            for (i = 1; i < arr.length - 1; i++) {
+                text += "{" + arr[i] + "}\n\n";
+            }
+            text += lastPosText;
 
-            // document.getElementById("positions").innerText += "\n" + message.data + "\n";
+            document.getElementById("positions").innerText = text;
         };
     </script>
 </head>
