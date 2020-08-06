@@ -29,12 +29,13 @@ public class PositionRetriever {
     }
 
     private void sendPositions() {
-        ObjectMapper om = new ObjectMapper();
+        //ObjectMapper om = new ObjectMapper();
 
         if (repository.count() > 0) {
             for (WebSocketSession sessionInList : handler.getSessionList()) {
                 try {
-                    sessionInList.sendMessage(new TextMessage(om.writeValueAsString(repository.findAll())));
+                    //sessionInList.sendMessage(new TextMessage(om.writeValueAsString(repository.findAll())));
+                    sessionInList.sendMessage(new TextMessage(repository.findAll().toString()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

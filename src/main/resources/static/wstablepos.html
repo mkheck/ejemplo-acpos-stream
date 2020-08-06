@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Table Page</title>
+    <script>
+        var socket = new WebSocket('ws://' + window.location.host + '/ws');
+
+        <!-- Add an event listener for when a connection is open -->
+        socket.onopen = function () {
+            console.log('WebSocket connection opened. Ready to send messages.');
+        };
+
+        <!-- Add an event listener for when a message is received from the server -->
+        socket.onmessage = function (message) {
+            // console.log('Message received from server: ');
+            // console.log(message);
+
+            var text = "";
+            var lastPosText = "";
+            var arr = message.data.split("},{");
+
+
+            //MH
+            var ac = "";
+            var table = document.getElementById("acTable");
+            var dataRows = table.rows.length;
+            for (i = 1; i < dataRows; i++) {
+                table.deleteRow(i);
+            }
+            var row = table.insertRow(1);
+            var cell0 = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            var cell2 = row.insertCell(2);
+            var cell3 = row.insertCell(3);
+            var cell4 = row.insertCell(4);
+            var cell5 = row.insertCell(5);
+
+
+            if (arr.length > 1) {
+                text = "\n" + arr[0] + "}\n\n";
+                lastPosText = "{" + arr[arr.length - 1] + "\n\n";
+
+                //MH
+                console.log("1   " + arr[0].substring(1) + "}");
+                ac = JSON.parse(arr[0].substring(1) + "}");
+            } else {
+                text = "\n" + arr[0] + "\n\n";
+
+                //MH
+                console.log("2   " + arr[0]);
+                ac = JSON.parse(arr[0]); // May have to substring(1, len-1)
+            }
+
+            //MH
+            cell0.innerHTML = ac.callsign;
+            cell1.innerHTML = ac.squawk;
+            cell2.innerHTML = ac.reg;
+            cell3.innerHTML = ac.flightno;
+            cell4.innerHTML = ac.route;
+            cell5.innerHTML = ac.type;
+
+
+            for (i = 1; i < arr.length - 1; i++) {
+                text += "{" + arr[i] + "}\n\n";
+
+                //MH
+                console.log("3   " + "{" + arr[i] + "}");
+                ac = JSON.parse("{" + arr[i] + "}"); // May have to substring(1, len-1)
+                row = table.insertRow(i+1);
+                cell0 = row.insertCell(0);
+                cell1 = row.insertCell(1);
+                cell2 = row.insertCell(2);
+                cell3 = row.insertCell(3);
+                cell4 = row.insertCell(4);
+                cell5 = row.insertCell(5);
+                cell0.innerHTML = ac.callsign;
+                cell1.innerHTML = ac.squawk;
+                cell2.innerHTML = ac.reg;
+                cell3.innerHTML = ac.flightno;
+                cell4.innerHTML = ac.route;
+                cell5.innerHTML = ac.type;
+            }
+            text += lastPosText;
+
+            document.getElementById("positions").innerText = text;
+        };
+    </script>
+</head>
+<body>
+<h1>Current Aircraft Positions</h1>
+<div id="listing" class="positionlist">
+    <h2>Live Table</h2>
+    <table id="acTable">
+        <thead>
+        <tr>
+            <th>Call Sign</th>
+            <th>Squawk</th>
+            <th>AC Reg</th>
+            <th>Flight #</th>
+            <th>Route</th>
+            <th>AC Type</th>
+        </tr>
+        </thead>
+        <!--        <tbody>-->
+        <!--        <tr th:each="ac : ${currentPositions}">-->
+        <!--            &lt;!&ndash;            <td th:text="${ac.id}"></td>&ndash;&gt;-->
+        <!--            <td th:text="${ac.callsign}"></td>-->
+        <!--            <td th:text="${ac.squawk}"></td>-->
+        <!--            <td th:text="${ac.reg}"></td>-->
+        <!--            <td th:text="${ac.flightno}"></td>-->
+        <!--            <td th:text="${ac.route}"></td>-->
+        <!--            <td th:text="${ac.type}"></td>-->
+        <!--        </tr>-->
+        <!--        </tbody>-->
+    </table>
+</div>
+
+<div style="border-style: solid; border-width: 2px; margin-top: 15px; margin-bottom: 15px; margin-left: 15px; margin-right: 15px;">
+    <label id="positions"></label>
+</div>
+
+</body>
+</html>

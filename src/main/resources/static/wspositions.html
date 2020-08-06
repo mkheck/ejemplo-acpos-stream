@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Spring web socket tutorial</title>
+    <title>WebSocket Page</title>
     <script>
         var socket = new WebSocket('ws://' + window.location.host + '/ws');
 
@@ -17,18 +17,21 @@
             // console.log(message);
 
             var text = "";
-            var lastPosText = "";
-            var arr = message.data.split("},{");
-            if (arr.length > 1) {
-                text = "\n" + arr[0] + "}\n\n";
-                lastPosText = "{" + arr[arr.length - 1] + "\n\n";
-            } else {
-                text = "\n" + arr[0] + "\n\n";
+            var arrAC = message.data.split("Aircraft");
+            var ac = "";
+
+            for (i = 1; i < arrAC.length; i++) {
+                console.log("arrAC[" + i + "] ==>" + arrAC[i] + "<==")
+
+                // if (arrAC[i].endsWith(",")) {
+                //     text += "Aircraft(" + arrAC[i].substring(1, arrAC[i].length - 1);
+                // } else {
+                //     text += "Aircraft(" + arrAC[i];
+                // }
+
+                ac = (arrAC[i].endsWith(", ")) ? arrAC[i].substring(0, arrAC[i].length - 2) : arrAC[i]
+                text += "Aircraft" + ac + "\n\n";
             }
-            for (i = 1; i < arr.length - 1; i++) {
-                text += "{" + arr[i] + "}\n\n";
-            }
-            text += lastPosText;
 
             document.getElementById("positions").innerText = text;
         };
@@ -39,5 +42,6 @@
 <div style="border-style: solid; border-width: 2px; margin-top: 15px; margin-bottom: 15px; margin-left: 15px; margin-right: 15px;">
     <label id="positions"></label>
 </div>
+
 </body>
 </html>
